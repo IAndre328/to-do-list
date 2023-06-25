@@ -61,23 +61,37 @@ button:hover{
 .tarefa{
     margin-right: auto;
 }
+.alarme{
+    background-image: url(./imagem/relogio.png);
+}
+.sublinhar{
+    margin-inline: 10px;
+    background-image: url(./imagem/tachado.png);
+}
 .excluir{
     background-image: url(./imagem/lixeira.png);
-    margin-inline: 10px;
 }
-.sublinhar .excluir {
+.sublinhar .excluir .alarme{
     cursor: pointer;
     border: none;
     background-color: white;
     min-height: 20px;
     padding: 10px 10px;
 }
-.sublinhar{
-    background-image: url(./imagem/tachado.png);
-}
+
 .sublinhado{
     text-decoration: line-through;
 }
+/*inicio config alarme*/
+.configAlarme{
+    padding: 15px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background-color: black;
+}
+
+
 footer{
     color: white;
     text-align: center;

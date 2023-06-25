@@ -9,11 +9,9 @@ function tarefasCookies() {
   if (localStorage.length > 0) {
     let arrayArmazenado = JSON.parse(localStorage.getItem("Tarefas"));
 
-    arrayTarefas = arrayArmazenado.filter(function (a) {
-      return !this[JSON.stringify(a)] && (this[JSON.stringify(a)] = true);
-    }, Object.create(null))
+    arrayTarefas = arrayArmazenado
+    console.log(arrayTarefas)
     
-
     arrayTarefas.forEach(function (valor) {
       adicionar(valor);
     });
@@ -28,22 +26,22 @@ function verificar() {
   }
 }
 
+function criarElemento(tag,nomeClasse = [],func){
+  const elemento = document.createElement(tag);
+  elemento.classList.add(...nomeClasse);
+  if (tag == "button") elemento.onclick = func;
+  return elemento;
+}
+
 function adicionar(texto) {
-  const CoisasTarefa = document.createElement("div");
-  CoisasTarefa.classList.add("CoisasTarefa");
+  const CoisasTarefa = criarElemento("div",["CoisasTarefa"]);
+  const Tarefa = criarElemento("p",["tarefa"]);
+  Tarefa.textContent = texto;
+  const alarme = criarElemento("button",["alarme"],"configAlarme");
+  const sublinhar = criarElemento("button",["sublinhar"],"sublinhar");
+  const excluir = criarElemento("button",["excluir"],"excluir");
 
-  const Tarefa = document.createElement("p");
-  Tarefa.classList.add("tarefa");
-  Tarefa.innerText = texto;
-  CoisasTarefa.appendChild(Tarefa);
-
-  const sublinhar = document.createElement("button");
-  sublinhar.classList.add("sublinhar");
-  CoisasTarefa.appendChild(sublinhar)
-
-  const excluir = document.createElement("button");
-  excluir.classList.add("excluir");
-  CoisasTarefa.appendChild(excluir);
+  adicionarElementos(CoisasTarefa,[Tarefa,alarme,sublinhar,excluir])
 
   txt.value = "";
   if (!arrayTarefas.includes(texto)){
@@ -54,8 +52,23 @@ function adicionar(texto) {
   res.appendChild(CoisasTarefa);
 }
 
+function adicionarElementos(lugar,elementos){
+  elementos.forEach(elemento => {
+    lugar.appendChild(elemento);
+  });
+}
+
+function configAlarme(e){
+  const item = e.target;
+  if (item.classList === "configAlarme") {
+    const divConfigAlarme = criarElemento("div",["configAlarme"]);
+    adicionarElementos(res,[divConfigAlarme]);
+  }
+    
+}
+
 function sublinhar(e){
-    const item = e.target;
+    const item = e.target
     const itemP = item.parentElement.querySelector("p");
     
     if (item.classList[0] === "sublinhar") {
@@ -82,6 +95,7 @@ function deletar(e) {
 function limpar() {
   res.innerHTML = "";
   localStorage.clear();
+  window.location.reload();
 }
 
 
@@ -89,9 +103,11 @@ function limpar() {
 if ('Notification' in window) {
     // Verificar se as permissões de notificação foram concedidas pelo usuário
     if (Notification.permission === 'granted') {
+      
       // Criar e exibir a notificação
       exibirNotificacao();
     } else if (Notification.permission !== 'denied') {
+     
       // Solicitar permissão ao usuário para exibir notificações
       Notification.requestPermission().then(function (permission) {
         if (permission === 'granted') {
@@ -100,6 +116,7 @@ if ('Notification' in window) {
         }
       });
     }
+    
   }
   
   function exibirNotificacao() {
@@ -127,6 +144,7 @@ txt.addEventListener("keydown", function (e) {
   }
 });
 
+res.addEventListener("click",configAlarme)
 res.addEventListener("click", sublinhar);
 res.addEventListener("click", deletar);
 btn_limpar.addEventListener("click", limpar);
