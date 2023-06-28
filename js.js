@@ -60,7 +60,8 @@ function adicionarElementos(lugar,elementos){
 
 function configAlarme(e){
   const item = e.target;
-  if (item.classList === "configAlarme") {
+  console.log(item)
+  if (item.classList[0] === "alarme") {
     const divConfigAlarme = criarElemento("div",["configAlarme"]);
     adicionarElementos(res,[divConfigAlarme]);
   }
