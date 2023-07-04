@@ -63,7 +63,7 @@ function configAlarme(e){
   console.log(item)
   if (item.classList[0] === "alarme") {
     const divConfigAlarme = criarElemento("div",["configAlarme"]);
-    adicionarElementos(res,[divConfigAlarme]);
+    adicionarElementos(item.parentElement,[divConfigAlarme]);
   }
     
 }
@@ -122,9 +122,9 @@ if ('Notification' in window) {
   
   function exibirNotificacao() {
     // Cria uma nova instância de notificação
-    const notificacao = new Notification('Título da Notificação', {
-      body: 'Conteúdo da notificação',
-      icon: 'caminho/para/o/icone.png' // Opcional: caminho para um ícone da notificação
+    const notificacao = new Notification('Lixeirinha bonitinha', {
+      body: 'Me enche gostoso',
+      icon: '../imagem/lixeira.png' // Opcional: caminho para um ícone da notificação
     });
   
     // Manipular eventos da notificação (opcional)
