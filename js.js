@@ -2,7 +2,7 @@ const btn_adicionar = document.querySelector("button#adicionar");
 const btn_limpar = document.querySelector("#limpar");
 const txt = document.querySelector("input#txt");
 const res = document.querySelector("#res");
-const popup = document.querySelector("#blur");
+
 let arrayTarefas = [];
 
 function tarefasCookies() {
@@ -22,8 +22,10 @@ function tarefasCookies() {
 function verificar() {
   if (txt.value.length > 0 && !arrayTarefas.includes(txt.value)) {
     adicionar(txt.value);
-  } else {
-    alert("Insira uma tarefa válida");
+  } else if (arrayTarefas.includes(txt.value)){
+    const alerta = criarElemento("p",["alerta"]);
+    alerta.textContent("Essa tarefa já existe")
+    usePopup([alerta])
   }
 }
 
@@ -63,8 +65,8 @@ function configAlarme(e){
   const item = e.target;
   console.log(item)
   if (item.classList[0] === "alarme") {
-    const divConfigAlarme = criarElemento("div",["configAlarme"]);
-    usePopup([divConfigAlarme]);
+    
+    usePopup();
   }
     
 }
@@ -101,13 +103,18 @@ function limpar() {
 }
 
 function usePopup(item = []){
-  const btn_fechar = criarElemento("button",["btn_fechar"]);
+  const divConfigAlarme = criarElemento("div",["configAlarme"]);
+  const popup = criarElemento("div",["blur"]);
+  const btn_fechar = criarElemento("button",["btn_fechar"],()=> {desusePopup(popup)});
  
-  adicionarElementos(...item,[btn_fechar]);
+  adicionarElementos(document.querySelector("body"),[popup]);
+  adicionarElementos(popup,[divConfigAlarme]);
+  adicionarElementos(divConfigAlarme,[btn_fechar]);
+  adicionarElementos
 
-  adicionarElementos(popup,item);
-  popup.style.display = "block"
-  document.querySelector(".btn_fechar").addEventListener("click",() => {popup.style.display = "none"})
+}
+function desusePopup(popup) {
+  popup.remove();
 }
 
 // Verificar se o navegador suporta a API de Notificações
@@ -133,7 +140,7 @@ if ('Notification' in window) {
   function exibirNotificacao() {
     // Cria uma nova instância de notificação
     const notificacao = new Notification('Lixeirinha bonitinha', {
-      body: 'Me enche gostoso',
+      body: 'Notificação genérica',
       icon: '../imagem/lixeira.png' // Opcional: caminho para um ícone da notificação
     });
   
