@@ -2,6 +2,7 @@ const btn_adicionar = document.querySelector("button#adicionar");
 const btn_limpar = document.querySelector("#limpar");
 const txt = document.querySelector("input#txt");
 const res = document.querySelector("#res");
+const popup = document.querySelector("#blur");
 let arrayTarefas = [];
 
 function tarefasCookies() {
@@ -63,7 +64,7 @@ function configAlarme(e){
   console.log(item)
   if (item.classList[0] === "alarme") {
     const divConfigAlarme = criarElemento("div",["configAlarme"]);
-    adicionarElementos(item.parentElement,[divConfigAlarme]);
+    usePopup([divConfigAlarme]);
   }
     
 }
@@ -99,6 +100,15 @@ function limpar() {
   window.location.reload();
 }
 
+function usePopup(item = []){
+  const btn_fechar = criarElemento("button",["btn_fechar"]);
+ 
+  adicionarElementos(...item,[btn_fechar]);
+
+  adicionarElementos(popup,item);
+  popup.style.display = "block"
+  document.querySelector(".btn_fechar").addEventListener("click",() => {popup.style.display = "none"})
+}
 
 // Verificar se o navegador suporta a API de Notificações
 if ('Notification' in window) {
