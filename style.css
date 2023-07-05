@@ -85,11 +85,6 @@ button:hover{
 }
 /*inicio config alarme*/
 .configAlarme{
-    padding: 15px;
-    width: 30%;
-    height: 30%;
-    z-index: 9999;
-    background-color: white;
     position: absolute;
     display: flex;
     justify-content: center;
