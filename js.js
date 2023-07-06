@@ -19,14 +19,23 @@ function tarefasCookies() {
   }
 }
 
+const extrairtxt = (input)=>input.value;
+const extrair_p_Pai = (item)=>  item.parentElement.querySelector("p");
+
 function verificar() {
-  if (txt.value.length > 0 && !arrayTarefas.includes(txt.value)) {
+  if (extrairtxt(txt).length > 0 && !arrayTarefas.includes(txt.value)) {
     adicionar(txt.value);
   } else if (arrayTarefas.includes(txt.value)){
     const alerta = criarElemento("p",["alerta"]);
-    alerta.textContent("Essa tarefa já existe")
-    usePopup([alerta])
+    alerta.textContent = "Essa tarefa já existe";
+    usePopup([alerta]);
+    
+  } else if(extrairtxt(txt).length == 0) {
+    const alerta = criarElemento("p",["alerta"]);
+    alerta.textContent = "Insira uma tarefa!";
+    usePopup([alerta]);
   }
+  txt.value = "";
 }
 
 function criarElemento(tag,nomeClasse = [],func){
@@ -46,7 +55,7 @@ function adicionar(texto) {
 
   adicionarElementos(CoisasTarefa,[Tarefa,alarme,sublinhar,excluir])
 
-  txt.value = "";
+  
   if (!arrayTarefas.includes(texto)){
     arrayTarefas.push(texto);
     localStorage.setItem("Tarefas", JSON.stringify(arrayTarefas));
@@ -63,17 +72,20 @@ function adicionarElementos(lugar,elementos){
 
 function configAlarme(e){
   const item = e.target;
-  console.log(item)
+  console.log(item.parentElement)
   if (item.classList[0] === "alarme") {
-    
-    usePopup();
+    const txtDate = criarElemento("input",["txtDate"]);
+    txtDate.type = "datetime-local";
+    const btn_date = criarElemento("button",["btn_date"],()=>{let date = extrairtxt(txtDate); console.log(date)});
+    btn_date.textContent = "Configurar"
+    usePopup([txtDate,btn_date]);
   }
     
 }
 
 function sublinhar(e){
     const item = e.target
-    const itemP = item.parentElement.querySelector("p");
+    const itemP = extrair_p_Pai(item);
     
     if (item.classList[0] === "sublinhar") {
         if (itemP.classList.contains("sublinhado")){
@@ -87,7 +99,7 @@ function sublinhar(e){
 
 function deletar(e) {
   const item = e.target;
-  const textoItem = item.parentElement.querySelector("p").textContent;
+  const textoItem = extrair_p_Pai(item).textContent;
 
   if (item.classList[0] === "excluir") {
     item.parentElement.remove();
@@ -110,7 +122,7 @@ function usePopup(item = []){
   adicionarElementos(document.querySelector("body"),[popup]);
   adicionarElementos(popup,[divConfigAlarme]);
   adicionarElementos(divConfigAlarme,[btn_fechar]);
-  adicionarElementos
+  adicionarElementos(divConfigAlarme,[...item]);
 
 }
 function desusePopup(popup) {
@@ -148,7 +160,7 @@ if ('Notification' in window) {
     notificacao.onclick = function () {
       // Lidar com o evento de clique na notificação
       // Por exemplo, redirecionar o usuário para uma página específica
-      window.location.href = 'https://www.exemplo.com';
+      window.location.href = 'https://github.com/IAndre328';
     };
   }
   

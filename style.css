@@ -43,9 +43,9 @@ button{
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
-button:hover{
     transition: all 0.3s;
+}
+button:hover{ 
     background-color: rgb(92, 92, 240);
     color: var(--branco);
 }
@@ -115,9 +115,33 @@ button:hover{
     border-radius: 5%;
     padding: 20px;
     z-index: 9999;
-    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
+
+.txtDate {
+    width: 90%;
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .txtDate:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 5px #0066cc;
+  }
+
+  
 .btn_fechar{
+    position: absolute;
+    top: 5%;
+    left: 5%;
     transition: 00.3s;
     background-image: url(./imagem/fechar.png);
 }
