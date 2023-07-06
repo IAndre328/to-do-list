@@ -72,15 +72,48 @@ function adicionarElementos(lugar,elementos){
 
 function configAlarme(e){
   const item = e.target;
-  console.log(item.parentElement)
+  let itemP = extrair_p_Pai(item).textContent;
   if (item.classList[0] === "alarme") {
     const txtDate = criarElemento("input",["txtDate"]);
     txtDate.type = "datetime-local";
-    const btn_date = criarElemento("button",["btn_date"],()=>{let date = extrairtxt(txtDate); console.log(date)});
+    const btn_date = criarElemento("button",["btn_date"],()=>{extrairDadosAlarme(txtDate.value,itemP)});
     btn_date.textContent = "Configurar"
     usePopup([txtDate,btn_date]);
   }
     
+}
+
+function extrairDadosAlarme(date,texto){
+    let dataCompletaSystem = new Date();
+    let dataCompletaUser = new Date(date);
+
+    let dataSystem = {
+      dia: dataCompletaSystem.getDate(),
+      mes: dataCompletaSystem.getMonth() +1,
+      ano: dataCompletaSystem.getFullYear()
+    }
+    let dataUser = {
+      dia:dataCompletaUser.getDay(),
+      mes:dataCompletaUser.getMonth() +1,
+      ano:dataCompletaUser.getFullYear()
+    }
+
+    const comparar = (tempo)=> dataUser[tempo] < dataSystem[tempo];
+    const alerta = criarElemento("p",["alerta"]);
+    alerta.textContent = "Insira uma data válida";
+    
+
+    if (comparar("ano")){
+      usePopup([alerta]);
+    } else if (comparar("mes")){
+      alert("inválido")
+    } else if (comparar("dia")) {
+      alert("inválido")
+    } else {
+      alert("deu certo =) ")
+    }
+     
+
 }
 
 function sublinhar(e){
