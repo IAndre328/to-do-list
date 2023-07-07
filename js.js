@@ -4,19 +4,22 @@ const txt = document.querySelector("input#txt");
 const res = document.querySelector("#res");
 
 let arrayTarefas = [];
+let alarmes = [];
 
 function tarefasCookies() {
 
-  if (localStorage.length > 0) {
-    let arrayArmazenado = JSON.parse(localStorage.getItem("Tarefas"));
-
-    arrayTarefas = arrayArmazenado
-    console.log(arrayTarefas)
+    let tarefasArrayArmazenado = JSON.parse(localStorage.getItem("tarefas"));
+    arrayTarefas = tarefasArrayArmazenado;
+    console.log(arrayTarefas);
     
     arrayTarefas.forEach(function (valor) {
       adicionar(valor);
     });
-  }
+
+    let alarmesArrayArmazenado = JSON.parse(localStorage.getItem("alarmes"));
+    console.log(alarmesArrayArmazenado)
+  
+
 }
 
 const extrairtxt = (input)=>input.value;
@@ -58,7 +61,7 @@ function adicionar(texto) {
   
   if (!arrayTarefas.includes(texto)){
     arrayTarefas.push(texto);
-    localStorage.setItem("Tarefas", JSON.stringify(arrayTarefas));
+    localStorage.setItem("tarefas", JSON.stringify(arrayTarefas));
   }
 
   res.appendChild(CoisasTarefa);
@@ -76,45 +79,60 @@ function configAlarme(e){
   if (item.classList[0] === "alarme") {
     const txtDate = criarElemento("input",["txtDate"]);
     txtDate.type = "datetime-local";
+    const usoDate = criarElemento("label");
+    usoDate.for = "btn_date";
+    usoDate.textContent = "Clique no símbolo da agenda para definir a data!"
     const btn_date = criarElemento("button",["btn_date"],()=>{extrairDadosAlarme(txtDate.value,itemP)});
-    btn_date.textContent = "Configurar"
-    usePopup([txtDate,btn_date]);
+    btn_date.textContent = "Configurar";
+    usePopup([usoDate,txtDate,btn_date]);
   }
     
 }
 
-
-function extrairDadosAlarme(date,texto){
-    let dataCompletaSystem = new Date();
-    let dataCompletaUser = new Date(date);
-
-    let dataSystem = {
+const dataSistema = () => {
+  let dataCompletaSystem = new Date();
+  let dataSystem = {
       dia: dataCompletaSystem.getDate(),
       mes: dataCompletaSystem.getMonth() +1,
       ano: dataCompletaSystem.getFullYear()
     }
+    return [dataSystem,dataCompletaSystem];
+
+}
+
+function extrairDadosAlarme(date,texto){
+
+    let dataCompletaUser = new Date(date);
+
     let dataUser = {
-      dia:dataCompletaUser.getDay(),
+      dia:dataCompletaUser.getDate(),
       mes:dataCompletaUser.getMonth() +1,
       ano:dataCompletaUser.getFullYear()
     }
 
-    const comparar = (tempo)=> dataUser[tempo] < dataSystem[tempo];
+    console.log(dataUser)
+    const comparar = ()=> dataCompletaUser > dataSistema()[1];
+
     const alerta = criarElemento("p",["alerta"]);
     alerta.textContent = "Insira uma data válida";
     
-
-    if (comparar("ano")){
-      usePopup([alerta]);
-    } else if (comparar("mes")){
-      alert("inválido")
-    } else if (comparar("dia")) {
-      alert("inválido")
+    if (comparar("ano") && comparar("mes") && comparar("dia")) {
+      inserirAlarme({dataUser},texto)
     } else {
-      alert("deu certo =) ")
+      usePopup([alerta]);
     }
-     
 
+}
+
+function inserirAlarme({dia,mes,ano},mensagemNotificacao){
+ 
+  let newAlarme = {
+    tempo: {dia,mes,ano},
+    corpo: mensagemNotificacao,
+  };
+  alarmes.push(newAlarme);
+  console.log(alarmes);
+  localStorage.setItem("alarme",JSON.stringify(alarmes));
 }
 
 function sublinhar(e){
@@ -148,17 +166,42 @@ function limpar() {
   window.location.reload();
 }
 
-function usePopup(item = []){
-  const divConfigAlarme = criarElemento("div",["configAlarme"]);
-  const popup = criarElemento("div",["blur"]);
-  const btn_fechar = criarElemento("button",["btn_fechar"],()=> {desusePopup(popup)});
- 
-  adicionarElementos(document.querySelector("body"),[popup]);
-  adicionarElementos(popup,[divConfigAlarme]);
-  adicionarElementos(divConfigAlarme,[btn_fechar]);
-  adicionarElementos(divConfigAlarme,[...item]);
+function usePopup(item = []) {
+  const divConfigAlarme = criarElemento("div", ["configAlarme"]);
+  const popup = criarElemento("div", ["blur"]);
 
+  const sair = () => {
+    desusePopup(popup);
+    window.removeEventListener("keydown", esc);
+    txt.addEventListener("keydown", enter);
+  };
+
+  const esc = (e) => {
+    if (e.key === "Escape") {
+      sair();
+      e.preventDefault();
+    }
+  };
+
+  window.addEventListener("keyup", (e) => {
+    if (e.key === "Escape") {
+      sair();
+    }
+  });
+
+  window.addEventListener("keydown", esc);
+
+  const btn_fechar = criarElemento("button", ["btn_fechar"], () => {
+    sair();
+  });
+
+
+  adicionarElementos(document.querySelector("body"), [popup]);
+  adicionarElementos(popup, [divConfigAlarme]);
+  adicionarElementos(divConfigAlarme, [btn_fechar]);
+  adicionarElementos(divConfigAlarme, [...item]);
 }
+
 function desusePopup(popup) {
   popup.remove();
 }
@@ -183,10 +226,10 @@ if ('Notification' in window) {
     
   }
   
-  function exibirNotificacao() {
+  function exibirNotificacao(mensagemNotificacao = 'Notificação genérica') {
     // Cria uma nova instância de notificação
     const notificacao = new Notification('Lixeirinha bonitinha', {
-      body: 'Notificação genérica',
+      body: mensagemNotificacao,
       icon: '../imagem/lixeira.png' // Opcional: caminho para um ícone da notificação
     });
   
@@ -199,18 +242,16 @@ if ('Notification' in window) {
   }
   
 
-
-
-
-txt.addEventListener("keydown", function (e) {
-  if (e.key == "Enter") {
-    verificar();
+function enter(e) {
+    if (e.key == "Enter") {
+      verificar();
+    }
   }
-});
+txt.addEventListener("keydown", enter);
 
 res.addEventListener("click",configAlarme)
 res.addEventListener("click", sublinhar);
 res.addEventListener("click", deletar);
 btn_limpar.addEventListener("click", limpar);
 btn_adicionar.addEventListener("click", verificar);
-window.onload = tarefasCookies;
+window.onload = ()=>{if(localStorage.length > 0)tarefasCookies()};
