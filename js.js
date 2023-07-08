@@ -110,7 +110,6 @@ function extrairDadosAlarme(date,texto){
       ano:dataCompletaUser.getFullYear()
     }
 
-    console.log(dataUser)
     const comparar = ()=> dataCompletaUser > dataSistema()[1];
 
     const alerta = criarElemento("p",["alerta"]);
@@ -124,12 +123,13 @@ function extrairDadosAlarme(date,texto){
 
 }
 
-function inserirAlarme({dia,mes,ano},mensagemNotificacao){
+function inserirAlarme(quando = {dia,mes,ano},mensagemNotificacao){
  
   let newAlarme = {
-    tempo: {dia,mes,ano},
+    tempo: quando,
     corpo: mensagemNotificacao,
   };
+  console.log(newAlarme)
   alarmes.push(newAlarme);
   console.log(alarmes);
   localStorage.setItem("alarme",JSON.stringify(alarmes));
@@ -170,6 +170,7 @@ function usePopup(item = []) {
   const divConfigAlarme = criarElemento("div", ["configAlarme"]);
   const popup = criarElemento("div", ["blur"]);
 
+  
   const sair = () => {
     desusePopup(popup);
     window.removeEventListener("keydown", esc);
