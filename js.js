@@ -171,6 +171,7 @@ function usePopup(item = []) {
   const popup = criarElemento("div", ["blur"]);
 
   
+  
   const sair = () => {
     desusePopup(popup);
     window.removeEventListener("keydown", esc);
@@ -183,12 +184,6 @@ function usePopup(item = []) {
       e.preventDefault();
     }
   };
-
-  window.addEventListener("keyup", (e) => {
-    if (e.key === "Escape") {
-      sair();
-    }
-  });
 
   window.addEventListener("keydown", esc);
 
