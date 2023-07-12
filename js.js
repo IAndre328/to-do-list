@@ -1,65 +1,74 @@
+// Selecionar os elementos do DOM
 const btn_adicionar = document.querySelector("button#adicionar");
 const btn_limpar = document.querySelector("#limpar");
 const txt = document.querySelector("input#txt");
 const res = document.querySelector("#res");
 
+// Array para armazenar as tarefas
 let arrayTarefas = [];
+
+// Array para armazenar os alarmes
 let alarmes = [];
 
+// Função para recuperar as tarefas do armazenamento local (cookies)
 function tarefasCookies() {
+  let tarefasArrayArmazenado = JSON.parse(localStorage.getItem("tarefas"));
+  arrayTarefas = tarefasArrayArmazenado || [];
 
-    let tarefasArrayArmazenado = JSON.parse(localStorage.getItem("tarefas"));
-    arrayTarefas = tarefasArrayArmazenado;
-    console.log(arrayTarefas);
-    
-    arrayTarefas.forEach(function (valor) {
-      adicionar(valor);
-    });
+  arrayTarefas.forEach(function (valor) {
+    adicionar(valor);
+  });
 
-    let alarmesArrayArmazenado = JSON.parse(localStorage.getItem("alarmes"));
-    console.log(alarmesArrayArmazenado)
-  
+  let alarmesArrayArmazenado = JSON.parse(localStorage.getItem("alarmes"));
+  alarmes = alarmesArrayArmazenado || [];
 
+  if (alarmes.length > 0) {
+    console.log(alarmes);
+  }
 }
 
-const extrairtxt = (input)=>input.value;
-const extrair_p_Pai = (item)=>  item.parentElement.querySelector("p");
+// Função para extrair o valor de um elemento de entrada (input)
+const extrairtxt = (input) => input.value;
 
+// Função para extrair o elemento p pai de um item
+const extrair_p_Pai = (item) => item.parentElement.querySelector("p");
+
+// Função para verificar e adicionar uma nova tarefa
 function verificar() {
   if (extrairtxt(txt).length > 0 && !arrayTarefas.includes(txt.value)) {
     adicionar(txt.value);
-  } else if (arrayTarefas.includes(txt.value)){
-    const alerta = criarElemento("p",["alerta"]);
+  } else if (arrayTarefas.includes(txt.value)) {
+    const alerta = criarElemento("p", ["alerta"]);
     alerta.textContent = "Essa tarefa já existe";
     usePopup([alerta]);
-    
-  } else if(extrairtxt(txt).length == 0) {
-    const alerta = criarElemento("p",["alerta"]);
+  } else if (extrairtxt(txt).length == 0) {
+    const alerta = criarElemento("p", ["alerta"]);
     alerta.textContent = "Insira uma tarefa!";
     usePopup([alerta]);
   }
   txt.value = "";
 }
 
-function criarElemento(tag,nomeClasse = [],func){
+// Função para criar um elemento HTML
+function criarElemento(tag, nomeClasse = [], func) {
   const elemento = document.createElement(tag);
   elemento.classList.add(...nomeClasse);
   if (tag == "button") elemento.onclick = func;
   return elemento;
 }
 
+// Função para adicionar uma nova tarefa a lista de tarefas e ao arrayTarefas
 function adicionar(texto) {
-  const CoisasTarefa = criarElemento("div",["CoisasTarefa"]);
-  const Tarefa = criarElemento("p",["tarefa"]);
+  const CoisasTarefa = criarElemento("div", ["CoisasTarefa"]);
+  const Tarefa = criarElemento("p", ["tarefa"]);
   Tarefa.textContent = texto;
-  const alarme = criarElemento("button",["alarme"],"configAlarme");
-  const sublinhar = criarElemento("button",["sublinhar"],"sublinhar");
-  const excluir = criarElemento("button",["excluir"],"excluir");
+  const alarme = criarElemento("button", ["alarme"], "configAlarme");
+  const sublinhar = criarElemento("button", ["sublinhar"], "sublinhar");
+  const excluir = criarElemento("button", ["excluir"], "excluir");
 
-  adicionarElementos(CoisasTarefa,[Tarefa,alarme,sublinhar,excluir])
+  adicionarElementos(CoisasTarefa, [Tarefa, alarme, sublinhar, excluir]);
 
-  
-  if (!arrayTarefas.includes(texto)){
+  if (!arrayTarefas.includes(texto)) {
     arrayTarefas.push(texto);
     localStorage.setItem("tarefas", JSON.stringify(arrayTarefas));
   }
@@ -67,121 +76,115 @@ function adicionar(texto) {
   res.appendChild(CoisasTarefa);
 }
 
-function adicionarElementos(lugar,elementos){
-  elementos.forEach(elemento => {
+// Função para adicionar múltiplos elementos a um elemento pai
+function adicionarElementos(lugar, elementos) {
+  elementos.forEach((elemento) => {
     lugar.appendChild(elemento);
   });
 }
 
-function configAlarme(e){
+// Função para lidar com a configuração do alarme
+function configAlarme(e) {
   const item = e.target;
-  let itemP = extrair_p_Pai(item).textContent;
+  const itemP = extrair_p_Pai(item).textContent
   if (item.classList[0] === "alarme") {
-    const txtDate = criarElemento("input",["txtDate"]);
+    const txtDate = criarElemento("input", ["txtDate"]);
     txtDate.type = "datetime-local";
     const usoDate = criarElemento("label");
     usoDate.for = "btn_date";
-    usoDate.textContent = "Clique no símbolo da agenda para definir a data!"
-    const btn_date = criarElemento("button",["btn_date"],()=>{extrairDadosAlarme(txtDate.value,itemP)});
+    usoDate.textContent = "Clique no símbolo da agenda para definir a data!";
+    const btn_date = criarElemento("button", ["btn_date"]);
     btn_date.textContent = "Configurar";
-    usePopup([usoDate,txtDate,btn_date]);
+    usePopup([usoDate, txtDate, btn_date],itemP);
   }
-    
 }
 
+// Função para obter a data do sistema
 const dataSistema = () => {
   let dataCompletaSystem = new Date();
   let dataSystem = {
-      dia: dataCompletaSystem.getDate(),
-      mes: dataCompletaSystem.getMonth() +1,
-      ano: dataCompletaSystem.getFullYear()
-    }
-    return [dataSystem,dataCompletaSystem];
+    dia: dataCompletaSystem.getDate(),
+    mes: dataCompletaSystem.getMonth() + 1,
+    ano: dataCompletaSystem.getFullYear(),
+  };
+  return [dataSystem, dataCompletaSystem];
+};
 
+// Função para extrair os dados do alarme e inseri-lo
+function extrairDadosAlarme(date, texto, fecharPopup) {
+  let dataCompletaUser = new Date(date);
+
+  let dataUser = {
+    dia: dataCompletaUser.getDate(),
+    mes: dataCompletaUser.getMonth() + 1,
+    ano: dataCompletaUser.getFullYear(),
+  };
+
+  const comparar = () => dataCompletaUser.getTime() > dataSistema()[1].getTime();
+  const alerta = criarElemento("p", ["alerta"]);
+  alerta.textContent = "Insira uma data válida";
+
+  if (comparar()) {
+    inserirAlarme({ dataUser }, texto);
+    fecharPopup(); // Fechar o popup após inserir o alarme
+  } else {
+    usePopup([alerta]);
+  }
 }
 
-function extrairDadosAlarme(date,texto){
-
-    let dataCompletaUser = new Date(date);
-
-    let dataUser = {
-      dia:dataCompletaUser.getDate(),
-      mes:dataCompletaUser.getMonth() +1,
-      ano:dataCompletaUser.getFullYear()
-    }
-
-    const comparar = ()=> dataCompletaUser > dataSistema()[1];
-
-    const alerta = criarElemento("p",["alerta"]);
-    alerta.textContent = "Insira uma data válida";
-    
-    if (comparar("ano") && comparar("mes") && comparar("dia")) {
-      inserirAlarme({dataUser},texto)
-    } else {
-      usePopup([alerta]);
-    }
-
-}
-
-function inserirAlarme(quando = {dia,mes,ano},mensagemNotificacao){
- 
+// Função para inserir um novo alarme no array de alarmes
+function inserirAlarme(quando = { dia, mes, ano }, mensagemNotificacao) {
   let newAlarme = {
     tempo: quando,
     corpo: mensagemNotificacao,
   };
-  console.log(newAlarme)
   alarmes.push(newAlarme);
-  console.log(alarmes);
-  localStorage.setItem("alarme",JSON.stringify(alarmes));
+  localStorage.setItem("alarmes", JSON.stringify(alarmes));
 }
 
-function sublinhar(e){
-    const item = e.target
-    const itemP = extrair_p_Pai(item);
-    
-    if (item.classList[0] === "sublinhar") {
-        if (itemP.classList.contains("sublinhado")){
-           itemP.classList.remove("sublinhado");
-        } else {
-            itemP.classList.add("sublinhado");
-        }
-    }
+// Função para sublinhar uma tarefa
+function sublinhar(e) {
+  const item = e.target;
+  const itemP = extrair_p_Pai(item);
 
+  if (item.classList[0] === "sublinhar") {
+    itemP.classList.toggle("sublinhado");
+  }
 }
 
+// Função para deletar uma tarefa
 function deletar(e) {
   const item = e.target;
   const textoItem = extrair_p_Pai(item).textContent;
 
   if (item.classList[0] === "excluir") {
     item.parentElement.remove();
-    arrayTarefas = arrayTarefas.filter(valor => valor !== textoItem);
-    localStorage.setItem("Tarefas", JSON.stringify(arrayTarefas));
+    arrayTarefas = arrayTarefas.filter((valor) => valor !== textoItem);
+    localStorage.setItem("tarefas", JSON.stringify(arrayTarefas));
+    alarmes = alarmes.filter(objeto => objeto.corpo !== textoItem);
+    localStorage.setItem("alarmes", JSON.stringify(alarmes));
   }
 }
 
+// Função para limpar o conteúdo e redefinir o armazenamento local
 function limpar() {
   res.innerHTML = "";
   localStorage.clear();
   window.location.reload();
 }
 
-function usePopup(item = []) {
+// Função para exibir um popup com conteúdo personalizado
+function usePopup(item = [],nomeTarefa) {
   const divConfigAlarme = criarElemento("div", ["configAlarme"]);
   const popup = criarElemento("div", ["blur"]);
 
-  
-  
   const sair = () => {
     desusePopup(popup);
-    window.removeEventListener("keydown", esc);
-    txt.addEventListener("keydown", enter);
   };
 
   const esc = (e) => {
     if (e.key === "Escape") {
       sair();
-      e.preventDefault();
     }
   };
 
@@ -191,13 +194,23 @@ function usePopup(item = []) {
     sair();
   });
 
-
   adicionarElementos(document.querySelector("body"), [popup]);
   adicionarElementos(popup, [divConfigAlarme]);
   adicionarElementos(divConfigAlarme, [btn_fechar]);
   adicionarElementos(divConfigAlarme, [...item]);
+
+  const btn_date = item.find((element) => element.classList.contains("btn_date"));
+  
+  if (btn_date) {
+    btn_date.addEventListener("click", () => {
+      const txtDate = document.querySelector(".txtDate");
+      extrairDadosAlarme(txtDate.value, nomeTarefa, sair);
+    });
+  }
+
 }
 
+// Função para remover um popup
 function desusePopup(popup) {
   popup.remove();
 }
@@ -222,6 +235,7 @@ if ('Notification' in window) {
     
   }
   
+  // Função para exibir uma notificação
   function exibirNotificacao(mensagemNotificacao = 'Notificação genérica') {
     // Cria uma nova instância de notificação
     const notificacao = new Notification('Lixeirinha bonitinha', {
@@ -237,17 +251,27 @@ if ('Notification' in window) {
     };
   }
   
-
+// Função para verificar se a tecla Enter foi pressionada e chamar a função verificar()
 function enter(e) {
     if (e.key == "Enter") {
       verificar();
     }
   }
+// Adicionar evento de pressionar tecla Enter ao elemento de entrada de texto (txt)
 txt.addEventListener("keydown", enter);
 
-res.addEventListener("click",configAlarme)
+// Adicionar eventos de clique aos elementos dentro de res
+res.addEventListener("click", configAlarme);
 res.addEventListener("click", sublinhar);
 res.addEventListener("click", deletar);
+
+// Adicionar eventos de clique aos botões de limpar e adicionar
 btn_limpar.addEventListener("click", limpar);
 btn_adicionar.addEventListener("click", verificar);
-window.onload = ()=>{if(localStorage.length > 0)tarefasCookies()};
+
+// Executar a função tarefasCookies quando a janela carregar, se houver tarefas armazenadas
+window.onload = () => {
+  if (localStorage.length != 0) {
+    tarefasCookies();
+  }
+};
