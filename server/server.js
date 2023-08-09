@@ -4,7 +4,7 @@ const path = require('path');
 
 const options = {
   key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.cert')
+  cert: fs.readFileSync('server.csr')
 };
 
 const server = https.createServer(options, (req, res) => {
