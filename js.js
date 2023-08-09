@@ -22,9 +22,6 @@ function tarefasCookies() {
   let alarmesArrayArmazenado = JSON.parse(localStorage.getItem("alarmes"));
   alarmes = alarmesArrayArmazenado || [];
 
-  if (alarmes.length > 0) {
-    console.log(alarmes);
-  }
 }
 
 // Função para extrair o valor de um elemento de entrada (input)
@@ -106,26 +103,30 @@ const dataSistema = () => {
     dia: dataCompletaSystem.getDate(),
     mes: dataCompletaSystem.getMonth() + 1,
     ano: dataCompletaSystem.getFullYear(),
+    horas: dataCompletaSystem.getHours(),
+    minutos: dataCompletaSystem.getMinutes(),
   };
   return [dataSystem, dataCompletaSystem];
 };
 
 // Função para extrair os dados do alarme e inseri-lo
 function extrairDadosAlarme(date, texto, fecharPopup) {
-  let dataCompletaUser = new Date(date);
 
+  let dataCompletaUser = new Date(date);
   let dataUser = {
     dia: dataCompletaUser.getDate(),
     mes: dataCompletaUser.getMonth() + 1,
     ano: dataCompletaUser.getFullYear(),
+    horas: dataCompletaUser.getHours(),
+    minutos: dataCompletaUser.getMinutes(),
   };
-
-  const comparar = () => dataCompletaUser.getTime() > dataSistema()[1].getTime();
+  
+  const comparar = () => dataCompletaUser >= dataSistema()[1].getTime();
   const alerta = criarElemento("p", ["alerta"]);
   alerta.textContent = "Insira uma data válida";
 
   if (comparar()) {
-    inserirAlarme({ dataUser }, texto);
+    inserirAlarme( dataUser , texto);
     fecharPopup(); // Fechar o popup após inserir o alarme
   } else {
     usePopup([alerta]);
@@ -133,9 +134,9 @@ function extrairDadosAlarme(date, texto, fecharPopup) {
 }
 
 // Função para inserir um novo alarme no array de alarmes
-function inserirAlarme(quando = { dia, mes, ano }, mensagemNotificacao) {
+function inserirAlarme(quando, mensagemNotificacao) {
   let newAlarme = {
-    tempo: quando,
+    quando,
     corpo: mensagemNotificacao,
   };
   alarmes.push(newAlarme);
@@ -215,20 +216,52 @@ function desusePopup(popup) {
   popup.remove();
 }
 
+
+function notificacaoAlarme(){
+  const dataSys = dataSistema()[0];
+  console.log(alarmes)
+   let repetir = setInterval(()=>{
+      alarmes.forEach(element => {
+        console.log(element.quando.dia)
+        if (
+          element.quando.dia == dataSys.dia &&
+          element.quando.mes == dataSys.mes &&
+          element.quando.ano == dataSys.ano &&
+          element.quando.horas == dataSys.horas &&
+          element.quando.minutos == dataSys.minutos
+          ) {
+          exibirNotificacao(element.corpo);
+        }
+      });
+    },1000)
+}
+
 // Verificar se o navegador suporta a API de Notificações
 if ('Notification' in window) {
     // Verificar se as permissões de notificação foram concedidas pelo usuário
     if (Notification.permission === 'granted') {
       
-      // Criar e exibir a notificação
-      exibirNotificacao();
+      if (alarmes.length > 0) {
+        console.log(alarmes);
+        notificacaoAlarme();
+      }
+
     } else if (Notification.permission !== 'denied') {
      
       // Solicitar permissão ao usuário para exibir notificações
       Notification.requestPermission().then(function (permission) {
         if (permission === 'granted') {
           // Permissão concedida, criar e exibir a notificação
-          exibirNotificacao();
+          const alerta = criarElemento("p", ["alerta"]);
+          alerta.textContent = "Agora o notificaremos sobre o alarme =)";
+          usePopup([alerta]);
+          
+          
+          if (alarmes.length > 0) {
+            console.log(alarmes);
+            notificacaoAlarme();
+          }
+
         }
       });
     }
