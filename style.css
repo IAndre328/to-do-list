@@ -1,13 +1,26 @@
-:root{
-    --corFundo: rgb(92, 92, 240);
-    --branco: white;
-}
+
+/* Estilos para dark mode */
+@media (prefers-color-scheme: dark) {
+    :root{
+        --corFundo: rgb(15, 15, 17);
+        --corDiv: rgb(255, 255, 255);
+    }
+  }
+  
+  /* Estilos para light mode (opcional) */
+  @media (prefers-color-scheme: light) {
+    :root{
+        --corFundo: rgb(92, 92, 240);
+        --corDiv: #ffffff;
+    }
+  }
+  
 body{
     background: var(--corFundo);
     font: normal 1rem Arial;
 }
 header{
-    color: var(--branco);
+    color: var(--corDiv);
     text-align: center;
 }
 section{
@@ -15,7 +28,7 @@ section{
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: var(--branco);
+    background-color: var(--corDiv);
     border-radius: 10px;
     padding: 15px;
     width: 50%;
@@ -32,7 +45,7 @@ section{
     transition: border-color 0.3s;
 }
 #txt:focus{
-    border-color: #007bff;
+    border-color: var(--corFundo);
 }
 #textos{
     text-align: center;
@@ -46,8 +59,8 @@ button{
     transition: all 0.3s;
 }
 button:hover{ 
-    background-color: rgb(92, 92, 240);
-    color: var(--branco);
+    background-color: var(--corFundo);
+    color: var(--corDiv);
 }
 
 
@@ -84,7 +97,7 @@ button:hover{
 .sublinhar .excluir .alarme{
     cursor: pointer;
     border: none;
-    background-color:var(--branco);
+    background-color:var(--corDiv);
     min-height: 20px;
     padding: 10px 10px;
 }
@@ -109,7 +122,7 @@ button:hover{
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: var(--branco);
+    background-color: var(--corDiv);
     width: 30%;
     height: 30%;
     border-radius: 5%;
@@ -149,7 +162,7 @@ button:hover{
     scale: 1.3;
 }
 footer{
-    color: var(--branco);
+    color: var(--corDiv);
     text-align: center;
     font-style: italic;
 }
