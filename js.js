@@ -219,21 +219,30 @@ function desusePopup(popup) {
 
 function notificacaoAlarme(){
   const dataSys = dataSistema()[0];
-  console.log(alarmes)
+  
    let repetir = setInterval(()=>{
-      alarmes.forEach(element => {
-        console.log(element.quando.dia)
-        if (
-          element.quando.dia == dataSys.dia &&
-          element.quando.mes == dataSys.mes &&
-          element.quando.ano == dataSys.ano &&
-          element.quando.horas == dataSys.horas &&
-          element.quando.minutos == dataSys.minutos
-          ) {
-          exibirNotificacao(element.corpo);
-        }
-      });
-    },1000)
+     alarmes.forEach(element => {
+      console.log(dataSys.dia == element.quando.dia &&
+        dataSys.minutos == element.quando.minutos)
+      if (
+        dataSys.ano == element.quando.ano &&
+        dataSys.horas == element.quando.horas &&
+        dataSys.mes == element.quando.mes &&
+        dataSys.dia == element.quando.dia &&
+        dataSys.minutos == element.quando.minutos
+      ){
+        console.log("gooo")
+      }
+    });
+     },1000) 
+
+   
+
+      
+        
+
+       
+     
 }
 
 // Verificar se o navegador suporta a API de Notificações

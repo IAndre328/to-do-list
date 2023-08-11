@@ -18,16 +18,15 @@
 body{
     background: var(--corFundo);
     font: normal 1rem Arial;
+    display: flex;
+    flex-direction: column;
 }
 header{
     color: var(--corDiv);
     text-align: center;
 }
 section{
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    
     background-color: var(--corDiv);
     border-radius: 10px;
     padding: 15px;
@@ -163,8 +162,6 @@ button:hover{
 }
 footer{
     color: var(--corDiv);
-    justify-content: end;
     text-align: center;
-    font-style: italic;
 }
 
