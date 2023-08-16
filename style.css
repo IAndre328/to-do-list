@@ -1,19 +1,9 @@
 
-/* Estilos para dark mode */
-@media (prefers-color-scheme: dark) {
-    :root{
-        --corFundo: rgb(15, 15, 17);
-        --corDiv: rgb(255, 255, 255);
-    }
-  }
-  
-  /* Estilos para light mode (opcional) */
-  @media (prefers-color-scheme: light) {
     :root{
         --corFundo: rgb(92, 92, 240);
         --corDiv: #ffffff;
     }
-  }
+  
   
 body{
     background: var(--corFundo);
