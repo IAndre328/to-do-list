@@ -52,7 +52,7 @@ function exibirAlerta(mensagem) {
 
   alerta.textContent = mensagem;
 
-  exibirPopup([alerta]);
+  usePopup([alerta]);
 }
 
 // Função para criar um elemento HTML
@@ -106,28 +106,24 @@ function adicionarElementos(elementoPai, elementosFilhos) {
 
 // Função para lidar com a configuração do alarme
 function configAlarme(e) {
-
+  
   const item = e.target;
 
   const textoItem = extrairPaiDoItem(item).textContent;
 
-  if (item.classList.contains("alarme")) {
+  if (item.classList[0] == "alarme") {
 
     const txtDate = criarElemento("input", ["txtDate"]);
-
     txtDate.type = "datetime-local";
 
     const usoDate = criarElemento("label");
-
     usoDate.htmlFor = "btn_date";
-
     usoDate.textContent = "Clique no símbolo da agenda para definir a data!";
 
     const btn_date = criarElemento("button", ["btn_date"]);
-
     btn_date.textContent = "Configurar";
 
-    exibirPopup([usoDate, txtDate, btn_date], textoItem);
+     usePopup([usoDate, txtDate, btn_date], textoItem);
     
   }
 }
@@ -157,7 +153,8 @@ function extrairDadosAlarme(date, texto, fecharPopup) {
     minutos: dataCompletaUser.getMinutes(),
   };
   
-  const comparar = () => dataCompletaUser >= dataSistema()[1].getTime();
+  const comparar = () => dataCompletaUser >= dataSistema()[1]
+  console.log(dataCompletaUser)
   const alerta = criarElemento("p", ["alerta"]);
   alerta.textContent = "Insira uma data válida";
 
@@ -181,8 +178,9 @@ function inserirAlarme(quando, mensagemNotificacao) {
 
 // Função para sublinhar uma tarefa
 function sublinhar(e) {
+  console.log("teste")
   const item = e.target;
-  const itemP = extrair_p_Pai(item);
+  const itemP = extrairPaiDoItem(item);
 
   if (item.classList[0] === "sublinhar") {
     itemP.classList.toggle("sublinhado");
@@ -192,7 +190,7 @@ function sublinhar(e) {
 // Função para deletar uma tarefa
 function deletar(e) {
   const item = e.target;
-  const textoItem = extrair_p_Pai(item).textContent;
+  const textoItem = extrairPaiDoItem(item).textContent;
 
   if (item.classList[0] === "excluir") {
     item.parentElement.remove();
@@ -236,16 +234,21 @@ function usePopup(item = [],nomeTarefa) {
   adicionarElementos(divConfigAlarme, [btn_fechar]);
   adicionarElementos(divConfigAlarme, [...item]);
 
-  const btn_date = item.find((element) => element.classList.contains("btn_date"));
   
-  if (btn_date) {
-    btn_date.addEventListener("click", () => {
-      const txtDate = document.querySelector(".txtDate");
-      extrairDadosAlarme(txtDate.value, nomeTarefa, sair);
-    });
+  
+    const btn_date = item.find((element) => element.classList.contains("btn_date"));
+    
+    if (btn_date) {
+      btn_date.addEventListener("click", () => {
+        const txtDate = document.querySelector(".txtDate");
+        console.log(txtDate)
+        extrairDadosAlarme(txtDate.value, nomeTarefa, sair);
+      });
+    }
+  
   }
 
-}
+
 
 // Função para remover um popup
 function desusePopup(popup) {
@@ -341,10 +344,7 @@ function aoPressionarEnter(evento) {
 // Adicionar eventos de pressionar tecla Enter ao elemento de entrada de texto (txt)
 txt.addEventListener("keydown", aoPressionarEnter);
 
-// Adicionar eventos de clique aos elementos dentro de res
-res.addEventListener("click", configAlarme);
-res.addEventListener("click", sublinhar);
-res.addEventListener("click", deletar);
+
 
 // Adicionar eventos de clique aos botões de limpar e adicionar
 btn_limpar.addEventListener("click", limpar);
