@@ -258,7 +258,7 @@ function desusePopup(popup) {
 
 // Função para verificar alarmes e exibir notificações
 function notificacaoAlarme() {
-  const dataSys = dataSistema()[0];
+ 
 
   let repetir = setInterval(() => {
     const dataAtual = dataSistema()[0];
@@ -267,11 +267,11 @@ function notificacaoAlarme() {
       const alarmeData = element.quando;
 
       if (
-        dataAtual.ano === alarmeData.ano &&
-        dataAtual.mes === alarmeData.mes &&
-        dataAtual.dia === alarmeData.dia &&
-        dataAtual.horas === alarmeData.horas &&
-        dataAtual.minutos === alarmeData.minutos
+        dataAtual.ano >= alarmeData.ano &&
+        dataAtual.mes >= alarmeData.mes &&
+        dataAtual.dia >= alarmeData.dia &&
+        dataAtual.horas >= alarmeData.horas &&
+        dataAtual.minutos >= alarmeData.minutos
       ) {
         exibirNotificacao(element.corpo);
       }
