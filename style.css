@@ -9,6 +9,8 @@ body{
     background: var(--corFundo);
     font: normal 1rem Arial;
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
 }
 header{
@@ -40,6 +42,7 @@ section{
     text-align: center;
 }
 button{
+    margin: 5px;
     color: rgb(0, 0, 0);
     padding: 10px;
     border: none;
@@ -113,7 +116,7 @@ button:hover{
     transform: translate(-50%, -50%);
     background-color: var(--corDiv);
     width: 30%;
-    height: 30%;
+    height: 25%;
     border-radius: 5%;
     padding: 20px;
     z-index: 9999;
@@ -134,11 +137,12 @@ button:hover{
   }
   
   .txtDate:focus {
+    
     outline: none;
     border-color: #0066cc;
     box-shadow: 0 0 5px #0066cc;
   }
-
+ 
   
 .btn_fechar{
     position: absolute;

@@ -141,6 +141,8 @@ const dataSistema = () => {
   return [dataSystem, dataCompletaSystem];
 };
 
+const comparar = (data1,data2) => data1 >= data2
+
 // Função para extrair os dados do alarme e inseri-lo
 function extrairDadosAlarme(date, texto, fecharPopup) {
 
@@ -153,13 +155,13 @@ function extrairDadosAlarme(date, texto, fecharPopup) {
     minutos: dataCompletaUser.getMinutes(),
   };
   
-  const comparar = () => dataCompletaUser >= dataSistema()[1]
+ 
   console.log(dataCompletaUser)
   const alerta = criarElemento("p", ["alerta"]);
   alerta.textContent = "Insira uma data válida";
 
-  if (comparar()) {
-    inserirAlarme( dataUser , texto);
+  if (comparar(dataCompletaUser,dataSistema()[1])) {
+    inserirAlarme( dataCompletaUser , texto);
     fecharPopup(); // Fechar o popup após inserir o alarme
   } else {
     usePopup([alerta]);
@@ -178,7 +180,7 @@ function inserirAlarme(quando, mensagemNotificacao) {
 
 // Função para sublinhar uma tarefa
 function sublinhar(e) {
-  console.log("teste")
+ 
   const item = e.target;
   const itemP = extrairPaiDoItem(item);
 
@@ -258,20 +260,16 @@ function desusePopup(popup) {
 
 // Função para verificar alarmes e exibir notificações
 function notificacaoAlarme() {
- 
+ console.log("teste")
 
-  let repetir = setInterval(() => {
-    const dataAtual = dataSistema()[0];
-
+   setInterval(() => {
+    const dataAtual = dataSistema()[1];
+    
     alarmes.forEach(element => {
       const alarmeData = element.quando;
 
       if (
-        dataAtual.ano >= alarmeData.ano &&
-        dataAtual.mes >= alarmeData.mes &&
-        dataAtual.dia >= alarmeData.dia &&
-        dataAtual.horas >= alarmeData.horas &&
-        dataAtual.minutos >= alarmeData.minutos
+        comparar(dataAtual,alarmeData)
       ) {
         exibirNotificacao(element.corpo);
       }
@@ -306,7 +304,6 @@ if ('Notification' in window) {
           
           if (alarmes.length > 0) {
 
-            console.log(alarmes);
 
             notificacaoAlarme();
 
@@ -352,7 +349,8 @@ btn_adicionar.addEventListener("click", verificarTarefa);
 
 // Executar a função tarefasCookies quando a janela carregar, se houver tarefas armazenadas
 window.onload = () => {
-  if (localStorage.length !== 0) {
-    tarefasCookies();
-  }
+
+  if (localStorage.length !== 0)  tarefasCookies();
+
+     
 };
