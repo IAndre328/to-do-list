@@ -69,12 +69,11 @@ button:hover{
     font-size: 16px;
     outline: none;
     transition: border-color 0.3s;
-
+    word-wrap: break-word;
 }
 .tarefa{
     margin-right: auto;
-    word-wrap: break-word;
-    width: 200px;
+    width: 50%;
 }
 .alarme{
     background-image: url(./imagem/relogio.png);
@@ -86,7 +85,7 @@ button:hover{
 .excluir{
     background-image: url(./imagem/lixeira.png);
 }
-.sublinhar .excluir .alarme{
+.sublinhar, .excluir, .alarme{
     cursor: pointer;
     border: none;
     background-color:var(--corDiv);
@@ -96,6 +95,7 @@ button:hover{
 
 .sublinhado{
     text-decoration: line-through;
+    
 }
 /*inicio config alarme*/
 .blur{
@@ -159,3 +159,16 @@ footer{
     text-align: center;
 }
 
+
+
+@media (max-width: 450px){
+  /* .CoisasTarefa .alarme,
+  .CoisasTarefa .sublinhar,
+  .CoisasTarefa .excluir{
+   flex-direction: column;
+  } */
+  section{
+    width: 75%;
+  }
+  
+}
