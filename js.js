@@ -86,7 +86,7 @@ function adicionarTarefa(texto) {
 
   if (!arrayTarefas.includes(texto)) {
 
-    arrayTarefas.push(texto);
+    arrayTarefas.push();
 
     localStorage.setItem("tarefas", JSON.stringify(arrayTarefas));
   }
@@ -184,9 +184,8 @@ function sublinhar(e) {
   const item = e.target;
   const itemP = extrairPaiDoItem(item);
 
-  if (item.classList[0] === "sublinhar") {
     itemP.classList.toggle("sublinhado");
-  }
+  
 }
 
 // Função para deletar uma tarefa
@@ -194,14 +193,17 @@ function deletar(e) {
   const item = e.target;
   const textoItem = extrairPaiDoItem(item).textContent;
 
-  if (item.classList[0] === "excluir") {
     item.parentElement.remove();
+  
     arrayTarefas = arrayTarefas.filter((valor) => valor !== textoItem);
+  
     localStorage.setItem("tarefas", JSON.stringify(arrayTarefas));
+  
     alarmes = alarmes.filter(objeto => objeto.corpo !== textoItem);
+  
     localStorage.setItem("alarmes", JSON.stringify(alarmes));
   }
-}
+
 
 // Função para limpar o conteúdo e redefinir o armazenamento local
 function limpar() {
